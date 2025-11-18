@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Casulth Store</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .checkout-wrapper {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+    .checkout-wrapper h2 {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    table.checkout-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table.checkout-table th,
+    table.checkout-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      font-size: 14px;
+    }
+    .checkout-total {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    .checkout-form label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    .checkout-form input,
+    .checkout-form textarea,
+    .checkout-form select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .checkout-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .btn-primary {
+      background: #7b2cff;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #661fd4;
+    }
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: #ddd;
+    }
+    .empty-cart {
+      text-align: center;
+      margin: 40px 0;
+    }
+    .empty-cart a {
+      color: #7b2cff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Casulth Store</h1>
+    <p>Halaman Checkout</p>
+  </header>
+
+  <div class="checkout-wrapper">
+    <h2>Ringkasan Pesanan</h2>
+    <div id="cart-summary"></div>
+
+    <form id="checkout-form" class="checkout-form">
+      <h3>Data Pembeli</h3>
+
+      <label for="name">Nama Lengkap</label>
+      <input type="text" id="name" required>
+
+      <label for="address">Alamat Lengkap</label>
+      <textarea id="address" rows="3" required></textarea>
+
+      <label for="payment">Metode Pembayaran</label>
+      <select id="payment" required>
+        <option value="">Pilih metode</option>
+        <option value="COD">COD (Bayar di tempat)</option>
+        <option value="Transfer Bank">Transfer Bank</option>
+        <option value="E-Wallet">E-Wallet (Dana/OVO/Gopay, dll.)</option>
+      </select>
+
+      <label for="note">Catatan Tambahan (opsional)</label>
+      <textarea id="note" rows="2"></textarea>
+
+      <div class="checkout-actions">
+        <button type="button" class="btn-secondary" onclick="window.location.href='index.html'">← Kembali Belanja</button>
+        <button type="submit" class="btn-primary">Kirim Pesanan via WhatsApp</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Ambil data keranjang dari localStorage
+    const cartData = JSON.parse(localStorage.getItem('cartData') || '[]');
+    const cartSummaryDiv = document.getElementById('cart-summary');
+
+    if (!cartData.length) {
+      cartSummaryDiv.innerHTML = `
+        <div class="empty-cart">
+          <p>Keranjang Anda kosong.</p>
+          <p><a href="index.html">Kembali ke halaman utama</a></p>
+        </div>
+      `;
+      document.getElementById('checkout-form').style.display = 'none';
+    } else {
+      let total = 0;
+      let totalQty = 0;
+
+      let tableHtml = '<table class="checkout-table">';
+      tableHtml += '<tr><th>Produk</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr>';
+
+      cartData.forEach(item => {
+        const sub = item.price * item.quantity;
+        total += sub;
+        totalQty += item.quantity;
+        tableHtml += `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>Rp ${item.price.toLocaleString()}</td>
+            <td>Rp ${sub.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+
+      tableHtml += '</table>';
+      tableHtml += `<div class="checkout-total">Total (${totalQty} item): <strong>Rp ${total.toLocaleString()}</strong></div>`;
+      cartSummaryDiv.innerHTML = tableHtml;
+    }
+
+    // Tangani submit form
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!cartData.length) return;
+
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const payment = document.getElementById('payment').value;
+      const note = document.getElementById('note').value.trim();
+
+      let total = 0;
+      let totalQty = 0;
+
+      cartData.forEach(item => {
+        total += item.price * item.quantity;
+        totalQty += item.quantity;
+      });
+
+      const timestamp = Date.now().toString().slice(-6);
+      const orderId = `CS-${timestamp}`;
+
+      let lines = [];
+      lines.push(`🛍 *Order Baru ${orderId}*`);
+      lines.push("");
+      lines.push("Detail Pesanan:");
+
+      cartData.forEach(item => {
+        const sub = item.price * item.quantity;
+        lines.push(`• ${item.name} x ${item.quantity} = Rp ${sub.toLocaleString()}`);
+      });
+
+      lines.push("");
+      lines.push(`Total Item   : ${totalQty} pcs`);
+      lines.push(`Total Bayar  : Rp ${total.toLocaleString()}`);
+      lines.push("");
+      lines.push("📌 *Data Pembeli*");
+      lines.push(`Nama        : ${name}`);
+      lines.push(`Alamat      : ${address}`);
+      lines.push(`Pembayaran  : ${payment}`);
+      if (note) {
+        lines.push(`Catatan     : ${note}`);
+      }
+      lines.push("");
+      lines.push("Terima kasih sudah order di Casulth Store 🙏");
+
+      const message = lines.join("\n");
+      const phone = "6285720400904";
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+      window.open(url, "_blank");
+      // Opsional: hapus keranjang sesudah checkout
+      // localStorage.removeItem('cartData');
+    });
+  </script>
+</body>
+</html>
