@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casulth Store - Toko Stiker Remaja</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png href="img/favicon.png">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-top">
+            <h1>Casulth Store</h1>
+
+            <div class="header-right">
+                <!-- Tombol Dark / Light -->
+                <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+                <!-- Icon Keranjang -->
+                <div class="cart-icon">
+                    🛒
+                    <span id="cart-count" class="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <p>Stiker Kartun, Lucu &amp; Aesthetic untuk Remaja</p>
+    </header>
+
+    <!-- BAGIAN PRODUK -->
+    <section class="product-section">
+        <h2>Produk Stiker Pilihan</h2>
+
+        <div class="product-grid">
+
+            <!-- PRODUK 1 -->
+            <div class="product-card">
+                <img src="img/produk1.jpg" alt="Sticker Cute Pack">
+                <h3>Sticker Cartoon Pack</h3>
+                <p>Stiker Gravity Falls.</p>
+                <p class="price">Rp 10.000</p>
+
+                <div class="product-actions">
+                    <button onclick="addToCart('Sticker Cute Pack', 10000, this)">
+                        Tambah ke Keranjang
+                    </button>
+                    <a href="detail-cute.html" class="detail-link">Lihat Detail</a>
+                </div>
+            </div>
+
+            <!-- PRODUK 2 -->
+            <div class="product-card">
+                <img src="img/produk2.jpg" alt="Sticker Kartun Pack">
+                <h3>Sticker Cartoon Pack</h3>
+                <p>Stiker The Simpsons.</p>
+                <p class="price">Rp 10.000</p>
+
+                <div class="product-actions">
+                    <button onclick="addToCart('Sticker Kartun Pack', 10000, this)">
+                        Tambah ke Keranjang
+                    </button>
+                    <a href="detail-kartun.html" class="detail-link">Lihat Detail</a>
+                </div>
+            </div>
+
+            <!-- PRODUK 3 -->
+            <div class="product-card">
+                <img src="img/produk3.jpg" alt="Sticker Aesthetic Pack">
+                <h3>Sticker Cartoon Pack</h3>
+                <p>Stiker We Bare Bears.</p>
+                <p class="price">Rp 10.000</p>
+
+                <div class="product-actions">
+                    <button onclick="addToCart('Sticker Aesthetic Pack', 10000, this)">
+                        Tambah ke Keranjang
+                    </button>
+                    <a href="detail-aesthetic.html" class="detail-link">Lihat Detail</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BAGIAN KERANJANG -->
+    <section class="cart-section">
+        <h2>Keranjang Belanja</h2>
+        <ul id="cart-list"></ul>
+        <p id="total">Total: Rp 0</p>
+        <button onclick="checkout()">Checkout</button>
+    </section>
+
+    <!-- TOMBOL WHATSAPP MENGAMBANG -->
+    <a href="https://wa.me/6285720400904?text=Halo,%20saya%20mau%20tanya%20tentang%20stiker"
+       target="_blank"
+       rel="noopener"
+       style="
+          position: fixed;
+          right: 20px;
+          bottom: 20px;
+          background: #25D366;
+          color: white;
+          padding: 12px 20px;
+          border-radius: 50px;
+          font-weight: bold;
+          text-decoration: none;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+          z-index: 9999;
+          font-size: 14px;
+       ">
+       Chat Admin
+    </a>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script src="js/script.js"></script>
+</body>
+</html>
